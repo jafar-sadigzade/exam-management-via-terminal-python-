@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sınaqların siyahsı</title>
+</head>
+
+<body>
+    <h1>Sınaqların siyahsı</h1>
+    <ul>
+        {% for table in tables %}
+        <li>
+            <strong>{{ table }}</strong>
+            <select onchange="location = this.value;">
+                <option value="#">Seçim edin</option>
+                <option value="{{ url_for('display_table', table_name=table) }}">Siyahı</option>
+                <option value="{{ url_for('display_report', table_name=table) }}">Cavab kağızı</option>
+            </select>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

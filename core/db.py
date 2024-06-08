@@ -4,7 +4,7 @@ import sqlite3
 def db_first():
     try:
         global cursor, conn, tbname
-        dbname = 'istedad_sinaq.db'  # SQLite database file
+        dbname = 'exam.sqlite3'  # SQLite database file
         tbname = input('Cədvəl adını daxil edin: ')
         conn = sqlite3.connect(dbname)
         cursor = conn.cursor()
