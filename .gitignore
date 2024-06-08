@@ -1,4 +1,30 @@
-venv/
 .idea
 __pycache__/*.pyc
-*.db
+*.sqlite3
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore __pycache__ directories
+__pycache__/
+
+# Other common files to ignore
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment directories
+.venv/
+env/
+venv/
+
+# Environment variable files
+.env
+.env.local
+
+# Editor specific files
+.vscode/
+.idea/
+
+# macOS specific files
+.DS_Store
