@@ -110,7 +110,8 @@ def extract_student_info(dosya_line):
     ata_adi = dosya_line[37:49].strip()
     cins = 'Kişi' if dosya_line[54:55] == 'K' else 'Qadın' if dosya_line[54:55] == 'Q' else ' '
     sinif = dosya_line[58:59].strip()
-    return ad, soyad, is_no, ata_adi, cins, sinif
+    bolme = dosya_line[50:53].strip()
+    return ad, soyad, is_no, ata_adi, cins, sinif, bolme
 
 
 def update_fenncavabdeyisenler(variables, dosya_line, x, fenncoordinate):
@@ -136,6 +137,7 @@ def calculate_scores(variables, x, sehvduz, sehvduzsay):
 
     if sehvduz.lower() == 'var':
         variables['fenncembaldeyisenler'][bal_key] = round((variables['fennduzdeyisenler'][duz_key] - (variables['fennsehvdeyisenler'][sehv_key] / int(sehvduzsay))) * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
+        variables['fenncembaldeyisenler'][bal_key] = max(0, variables['fenncembaldeyisenler'][bal_key])
     else:
         variables['fenncembaldeyisenler'][bal_key] = round(variables['fennduzdeyisenler'][duz_key] * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
 
