@@ -39,7 +39,7 @@ def show_table(table_name):
     data = cursor.fetchall()
 
     # number of subject
-    number_of_subject = int((len(data[0]) - 7) / 6)
+    number_of_subject = int((len(data[0]) - 8) / 6)
 
     # Close the database connection
     conn.close()
@@ -49,7 +49,7 @@ def show_table(table_name):
         if index in [2, 4]:
             return True
         if index >= 10:
-            return (index - 10) % 6 == 0 or (index - 11) % 6 == 0 or (index - 12) % 6 == 0
+            return (index - 11) % 6 == 0 or (index - 12) % 6 == 0 or (index - 13) % 6 == 0
         return False
 
     # Exclude specific elements from each row
@@ -61,7 +61,7 @@ def show_table(table_name):
     # Include subject name
     subject_names = []
     for i in range(number_of_subject):
-        subject_names.append(data[0][12+i*6])
+        subject_names.append(data[0][13+i*6])
 
     # Pass the fetched data to the HTML template for rendering
     return render_template('table.html', table_name=table_name, data=modified_data, number_of_subject=number_of_subject, subject_names=subject_names)
@@ -77,7 +77,7 @@ def display_report(table_name):
     conn.close()
 
     # Calculate number of subjects
-    number_of_subject = int((len(data[0]) - 7) / 6)
+    number_of_subject = int((len(data[0]) - 8) / 6)
 
     return render_template('report.html', table_name=table_name, data=data, number_of_subject=number_of_subject)
 

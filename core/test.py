@@ -137,6 +137,7 @@ def calculate_scores(variables, x, sehvduz, sehvduzsay):
 
     if sehvduz.lower() == 'var':
         variables['fenncembaldeyisenler'][bal_key] = round((variables['fennduzdeyisenler'][duz_key] - (variables['fennsehvdeyisenler'][sehv_key] / int(sehvduzsay))) * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
+        variables['fenncembaldeyisenler'][bal_key] = max(0, variables['fenncembaldeyisenler'][bal_key])
     else:
         variables['fenncembaldeyisenler'][bal_key] = round(variables['fennduzdeyisenler'][duz_key] * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
 
