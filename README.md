@@ -16,12 +16,12 @@ This project is an exam management system that processes student exam results, r
 - `txt/`: Contains text files or input data files.
   - `answer.txt`: File containing correct answers.
   - `result.txt`: File containing student results.
+- `venv/`: Directory containing the Python virtual environment.
 - `.gitignore`: Specifies intentionally untracked files to ignore.
 - `README.md`: This file, providing an overview of the project.
 - `exam.sqlite3`: SQLite database file containing exam data.
 - `examform.csv`: CSV file containing exam form data.
 - `requirements.txt`: Lists Python packages required for the project.
-- `venv/`: Directory containing the Python virtual environment.
 
 ## Installation
 
