@@ -35,7 +35,7 @@ def show_table(table_name):
     cursor = conn.cursor()
 
     # Fetch data from the selected table
-    cursor.execute(f'SELECT * FROM {table_name} ORDER BY cem DESC')
+    cursor.execute(f'SELECT * FROM {table_name} ORDER BY cem DESC, bolme DESC')
     data = cursor.fetchall()
 
     # number of subject
