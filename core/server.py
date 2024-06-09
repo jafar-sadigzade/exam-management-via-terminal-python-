@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for
 import sqlite3
 
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 
 @app.route('/')
@@ -28,12 +28,6 @@ def display_table(table_name):
     return redirect(url_for('show_table', table_name=table_name))
 
 
-@app.route('/report/<table_name>')
-def display_report(table_name):
-    # Logic to display the report goes here
-    return render_template('report.html', table_name=table_name)
-
-
 @app.route('/show_table/<table_name>')
 def show_table(table_name):
     # Connect to the database
@@ -41,7 +35,7 @@ def show_table(table_name):
     cursor = conn.cursor()
 
     # Fetch data from the selected table
-    cursor.execute(f'SELECT * FROM {table_name}')
+    cursor.execute(f'SELECT * FROM {table_name} ORDER BY cem DESC')
     data = cursor.fetchall()
 
     # number of subject
@@ -71,6 +65,21 @@ def show_table(table_name):
 
     # Pass the fetched data to the HTML template for rendering
     return render_template('table.html', table_name=table_name, data=modified_data, number_of_subject=number_of_subject, subject_names=subject_names)
+
+
+@app.route('/report/<table_name>')
+def display_report(table_name):
+    # Fetch data from the selected table
+    conn = sqlite3.connect('exam.sqlite3')
+    cursor = conn.cursor()
+    cursor.execute(f'SELECT * FROM {table_name}')
+    data = cursor.fetchall()
+    conn.close()
+
+    # Calculate number of subjects
+    number_of_subject = int((len(data[0]) - 7) / 6)
+
+    return render_template('report.html', table_name=table_name, data=data, number_of_subject=number_of_subject)
 
 
 if __name__ == '__main__':

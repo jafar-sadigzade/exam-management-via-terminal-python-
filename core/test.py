@@ -11,34 +11,29 @@ replaceletter = {
 }
 
 
-def get_file_path(prompt):
-    """
-    Prompt the user to input a filename and return the full path of the file.
-    Checks for the file in the current directory, 'core', and 'txt' subdirectories.
-
-    :param prompt: The prompt message to ask for the filename
-    :return: The full path of the file if found
-    """
-    directories_to_check = [os.getcwd(), os.path.join(os.getcwd(), 'core'), os.path.join(os.getcwd(), 'txt')]
+def get_file_path(prompt, directories_to_check=None):
+    if directories_to_check is None:
+        directories_to_check = [os.getcwd(), os.path.join(os.getcwd(), 'core'), os.path.join(os.getcwd(), 'txt')]
 
     while True:
         file_name = input(prompt)
-        file_found = False
-
         for directory in directories_to_check:
             file_path = os.path.join(directory, file_name)
             if os.path.isfile(file_path):
                 return file_path
-
-        print("Daxil etdiyiniz fayl tapılmadı! Yenidən cəhd edin!")
+        print("Fayl tapılmadı.")
 
 
 def read_and_replace(filepath, replace_dict):
-    with open(filepath, "r", encoding="utf8") as file:
-        content = file.read()
-    for key, value in replace_dict.items():
-        content = content.replace(key, value)
-    return content
+    try:
+        with open(filepath, "r", encoding="utf8") as file:
+            content = file.read()
+        for key, value in replace_dict.items():
+            content = content.replace(key, value)
+        return content
+    except FileNotFoundError:
+        print(f"Fayl tapılmadı: {filepath}")
+        return ""
 
 
 def initialize_variables(sinaq_info):
@@ -87,8 +82,9 @@ def initialize_variables(sinaq_info):
     return variables, fenncoordinate
 
 
-def process_student_results(dosya_list, variables, fenncoordinate, sehvduz, sehvduzsay):
+def process_student_results(dosya_list, variables_template, fenncoordinate, sehvduz, sehvduzsay):
     for z in range(len(dosya_list)):
+        variables = {key: value.copy() for key, value in variables_template.items()}  # Reset variables for each student
         student_info = extract_student_info(dosya_list[z])
         total_score = 0
 
@@ -98,6 +94,8 @@ def process_student_results(dosya_list, variables, fenncoordinate, sehvduz, sehv
                     variables['fennsualsaydeyisenler'][f"fennsual{x}"]):
                 calculate_scores(variables, x, sehvduz, sehvduzsay)
                 total_score += variables['fenncembaldeyisenler'][f"fenn{x}_bal"]
+
+        total_score = round(total_score, 2)
 
         d.db_third(*student_info, total_score, variables['fennduzdeyisenler'],
                    variables['fennsehvdeyisenler'], variables['fenncembaldeyisenler'],
@@ -137,36 +135,33 @@ def calculate_scores(variables, x, sehvduz, sehvduzsay):
             variables['fennsehvdeyisenler'][sehv_key] += 1
 
     if sehvduz.lower() == 'var':
-        variables['fenncembaldeyisenler'][bal_key] = (variables['fennduzdeyisenler'][duz_key] -
-                                                      (variables['fennsehvdeyisenler'][sehv_key] / int(
-                                                          sehvduzsay))) * float(
-            variables['fennbaldeyisenler'][f"fennbal{x}"])
+        variables['fenncembaldeyisenler'][bal_key] = round((variables['fennduzdeyisenler'][duz_key] - (variables['fennsehvdeyisenler'][sehv_key] / int(sehvduzsay))) * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
     else:
-        variables['fenncembaldeyisenler'][bal_key] = variables['fennduzdeyisenler'][duz_key] * float(
-            variables['fennbaldeyisenler'][f"fennbal{x}"])
+        variables['fenncembaldeyisenler'][bal_key] = round(variables['fennduzdeyisenler'][duz_key] * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
 
 
 def main():
-    dosya_input_path = get_file_path('şagird nəticələri olan txt faylın adını yazın: ')
+    dosya_input_path = get_file_path('OMR scan daxil edin: ')
     dosya_read = read_and_replace(dosya_input_path, replaceletter)
-    dosya_list = dosya_read.split("\n")
+    dosya_list = dosya_read.split("\n") if dosya_read else []
 
     for i in csvdict.listdict:
         print(i["ad"])
-    sinaqformasec = input("Sınaq formasını daxil edin: ")
+    sinaqformasec = input("Sınaq formasını seçin: ")
 
+    variables, fenncoordinate, sehvduz, sehvduzsay = None, None, None, None
     for i in csvdict.listdict:
         if sinaqformasec == i["ad"]:
             variables, fenncoordinate = initialize_variables(i)
             sehvduz = i["sehvduz"]
             sehvduzsay = i["sehvduzsay"] if sehvduz.lower() == 'var' else None
             break
-    else:
+
+    if not variables:
         print("Sınaq forması tapılmadı!")
         return
 
     d.db_first()
-
     for x in range(1, len(fenncoordinate)):
         d.db_second(x)
 
