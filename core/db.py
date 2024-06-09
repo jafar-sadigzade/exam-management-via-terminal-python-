@@ -16,6 +16,7 @@ def db_first():
             ata_adi TEXT,
             cins TEXT,
             sinif TEXT,
+            bolme TEXT,
             cem REAL
         )'''
         cursor.execute(sql)
@@ -50,11 +51,11 @@ def db_second(x):
         print(f"An error occurred: {e}")
 
 
-def db_third(ad, soyad, is_no, ata_adi, cins, sinif, cem, fennduzdeyisenler, fennsehvdeyisenler, fenncembaldeyisenler, fenncavabdeyisenler, duzguncavabdeyisenler, fennaddeyisenler):
+def db_third(ad, soyad, is_no, ata_adi, cins, sinif, bolme, cem, fennduzdeyisenler, fennsehvdeyisenler, fenncembaldeyisenler, fenncavabdeyisenler, duzguncavabdeyisenler, fennaddeyisenler):
     try:
-        columns = ['ad', 'soyad', 'is_no', 'ata_adi', 'cins', 'sinif', 'cem']
-        placeholders = ['?', '?', '?', '?', '?', '?', '?']
-        values = [ad, soyad, is_no, ata_adi, cins, sinif, cem]
+        columns = ['ad', 'soyad', 'is_no', 'ata_adi', 'cins', 'sinif', 'bolme', 'cem']
+        placeholders = ['?', '?', '?', '?', '?', '?', '?', '?']
+        values = [ad, soyad, is_no, ata_adi, cins, sinif, bolme, cem]
 
         for data in [fennduzdeyisenler, fennsehvdeyisenler, fenncembaldeyisenler, fenncavabdeyisenler, duzguncavabdeyisenler, fennaddeyisenler]:
             columns.extend(data.keys())

@@ -3,6 +3,7 @@
 
 # Ignore __pycache__ directories
 __pycache__/
+core/__pycache__/
 
 # Other common files to ignore
 *.pyo
