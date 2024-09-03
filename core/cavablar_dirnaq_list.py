@@ -9,7 +9,7 @@ def read_file(prompt):
     :param prompt: The prompt message to ask for the filename
     :return: The content of the file as a string
     """
-    directories_to_check = [os.getcwd(), 'core', 'txt']
+    directories_to_check = [os.getcwd(), "core", "txt"]
 
     while True:
         filename = input(prompt)
@@ -26,7 +26,7 @@ def read_file(prompt):
             print("Daxil etdiyiniz fayl tapılmadı! Yenidən cəhd edin!")
 
 
-data = read_file('Cavablar olan faylın adını yazın: ')
+data = read_file("Cavablar olan faylın adını yazın: ")
 
 
 def dzgn_cvb(a, b):

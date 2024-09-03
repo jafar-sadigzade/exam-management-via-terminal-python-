@@ -5,7 +5,7 @@ import os
 def csvtodict(file_path):
     listdict = []
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
                 listdict.append(row)
@@ -15,6 +15,6 @@ def csvtodict(file_path):
 
 
 # Usage
-file_name = 'examform.csv'
+file_name = "examform.csv"
 filepath = os.path.join(os.getcwd(), file_name)
 listdict = csvtodict(filepath)

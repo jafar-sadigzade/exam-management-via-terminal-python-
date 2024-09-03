@@ -8,12 +8,19 @@ replaceletter = {
     "s": "Ş",
     "u": "Ü",
     "g": "Ğ",
+    "c": "Ç",
+    "i": "İ",
+    "o": "Ö",
 }
 
 
 def get_file_path(prompt, directories_to_check=None):
     if directories_to_check is None:
-        directories_to_check = [os.getcwd(), os.path.join(os.getcwd(), 'core'), os.path.join(os.getcwd(), 'txt')]
+        directories_to_check = [
+            os.getcwd(),
+            os.path.join(os.getcwd(), "core"),
+            os.path.join(os.getcwd(), "txt"),
+        ]
 
     while True:
         file_name = input(prompt)
@@ -38,14 +45,14 @@ def read_and_replace(filepath, replace_dict):
 
 def initialize_variables(sinaq_info):
     variables = {
-        'fenncavabdeyisenler': {},
-        'duzguncavabdeyisenler': {},
-        'fennduzdeyisenler': {},
-        'fennsehvdeyisenler': {},
-        'fennsualsaydeyisenler': {},
-        'fennbaldeyisenler': {},
-        'fenncembaldeyisenler': {},
-        'fennaddeyisenler': {}
+        "fenncavabdeyisenler": {},
+        "duzguncavabdeyisenler": {},
+        "fennduzdeyisenler": {},
+        "fennsehvdeyisenler": {},
+        "fennsualsaydeyisenler": {},
+        "fennbaldeyisenler": {},
+        "fenncembaldeyisenler": {},
+        "fennaddeyisenler": {},
     }
 
     cavabstartcoordinate = 0
@@ -53,54 +60,78 @@ def initialize_variables(sinaq_info):
 
     for j in range(1, int(sinaq_info["fenn_sayi"]) + 1):
         fenn_no = f"fenn{j}"
-        variables['fenncavabdeyisenler'][fenn_no] = ""
+        variables["fenncavabdeyisenler"][fenn_no] = ""
 
         fenn_no_duz = f"fenn_{j}_duz"
-        variables['fennduzdeyisenler'][fenn_no_duz] = 0
+        variables["fennduzdeyisenler"][fenn_no_duz] = 0
 
         fenn_no_sehv = f"fenn_{j}_sehv"
-        variables['fennsehvdeyisenler'][fenn_no_sehv] = 0
+        variables["fennsehvdeyisenler"][fenn_no_sehv] = 0
 
         fenn_sual_say_deyisen = f"fennsual{j}"
-        variables['fennsualsaydeyisenler'][fenn_sual_say_deyisen] = sinaq_info[fenn_sual_say_deyisen]
+        variables["fennsualsaydeyisenler"][fenn_sual_say_deyisen] = sinaq_info[
+            fenn_sual_say_deyisen
+        ]
 
         fenn_bal_deyisen = f"fennbal{j}"
-        variables['fennbaldeyisenler'][fenn_bal_deyisen] = sinaq_info[fenn_bal_deyisen]
+        variables["fennbaldeyisenler"][fenn_bal_deyisen] = sinaq_info[fenn_bal_deyisen]
 
         fenn_ad_deyisen = f"fennad{j}"
-        variables['fennaddeyisenler'][fenn_ad_deyisen] = sinaq_info[fenn_ad_deyisen]
+        variables["fennaddeyisenler"][fenn_ad_deyisen] = sinaq_info[fenn_ad_deyisen]
 
         fenn_cem_bal_deyisen = f"fenn{j}_bal"
-        variables['fenncembaldeyisenler'][fenn_cem_bal_deyisen] = 0
+        variables["fenncembaldeyisenler"][fenn_cem_bal_deyisen] = 0
 
         duzguncavab_no = f"dzgn_cvb_f{j}"
-        duzguncavabcoordinate = cavabstartcoordinate + int(variables['fennsualsaydeyisenler'][fenn_sual_say_deyisen])
-        variables['duzguncavabdeyisenler'][duzguncavab_no] = cb.dzgn_cvb(cavabstartcoordinate, duzguncavabcoordinate)
-        cavabstartcoordinate += int(variables['fennsualsaydeyisenler'][fenn_sual_say_deyisen])
-        fenncoordinate.append(fenncoordinate[-1] + int(variables['fennsualsaydeyisenler'][fenn_sual_say_deyisen]))
+        duzguncavabcoordinate = cavabstartcoordinate + int(
+            variables["fennsualsaydeyisenler"][fenn_sual_say_deyisen]
+        )
+        variables["duzguncavabdeyisenler"][duzguncavab_no] = cb.dzgn_cvb(
+            cavabstartcoordinate, duzguncavabcoordinate
+        )
+        cavabstartcoordinate += int(
+            variables["fennsualsaydeyisenler"][fenn_sual_say_deyisen]
+        )
+        fenncoordinate.append(
+            fenncoordinate[-1]
+            + int(variables["fennsualsaydeyisenler"][fenn_sual_say_deyisen])
+        )
 
     return variables, fenncoordinate
 
 
-def process_student_results(dosya_list, variables_template, fenncoordinate, sehvduz, sehvduzsay):
+def process_student_results(
+    dosya_list, variables_template, fenncoordinate, sehvduz, sehvduzsay
+):
     for z in range(len(dosya_list)):
-        variables = {key: value.copy() for key, value in variables_template.items()}  # Reset variables for each student
+        variables = {
+            key: value.copy() for key, value in variables_template.items()
+        }  # Reset variables for each student
         student_info = extract_student_info(dosya_list[z])
         total_score = 0
 
         for x in range(1, len(fenncoordinate)):
             update_fenncavabdeyisenler(variables, dosya_list[z], x, fenncoordinate)
-            if len(variables['fenncavabdeyisenler'][f"fenn{x}"]) == int(
-                    variables['fennsualsaydeyisenler'][f"fennsual{x}"]):
+            if len(variables["fenncavabdeyisenler"][f"fenn{x}"]) == int(
+                variables["fennsualsaydeyisenler"][f"fennsual{x}"]
+            ):
                 calculate_scores(variables, x, sehvduz, sehvduzsay)
-                total_score += variables['fenncembaldeyisenler'][f"fenn{x}_bal"]
+                total_score += variables["fenncembaldeyisenler"][f"fenn{x}_bal"]
+            else:
+                print(variables["fenncavabdeyisenler"][f"fenn{x}"])
 
         total_score = round(total_score, 2)
 
-        d.db_third(*student_info, total_score, variables['fennduzdeyisenler'],
-                   variables['fennsehvdeyisenler'], variables['fenncembaldeyisenler'],
-                   variables['fenncavabdeyisenler'], variables['duzguncavabdeyisenler'],
-                   variables['fennaddeyisenler'])
+        d.db_third(
+            *student_info,
+            total_score,
+            variables["fennduzdeyisenler"],
+            variables["fennsehvdeyisenler"],
+            variables["fenncembaldeyisenler"],
+            variables["fenncavabdeyisenler"],
+            variables["duzguncavabdeyisenler"],
+            variables["fennaddeyisenler"],
+        )
 
 
 def extract_student_info(dosya_line):
@@ -108,7 +139,11 @@ def extract_student_info(dosya_line):
     soyad = dosya_line[13:25].strip()
     is_no = dosya_line[26:33].strip()
     ata_adi = dosya_line[37:49].strip()
-    cins = 'Kişi' if dosya_line[54:55] == 'K' else 'Qadın' if dosya_line[54:55] == 'Q' else ' '
+    cins = (
+        "Kişi"
+        if dosya_line[54:55] == "K"
+        else "Qadın" if dosya_line[54:55] == "Q" else " "
+    )
     sinif = dosya_line[58:59].strip()
     bolme = dosya_line[50:53].strip()
     return ad, soyad, is_no, ata_adi, cins, sinif, bolme
@@ -116,7 +151,9 @@ def extract_student_info(dosya_line):
 
 def update_fenncavabdeyisenler(variables, dosya_line, x, fenncoordinate):
     fenn_key = f"fenn{x}"
-    variables['fenncavabdeyisenler'][fenn_key] = dosya_line[fenncoordinate[x - 1]:fenncoordinate[x]].strip()
+    variables["fenncavabdeyisenler"][fenn_key] = dosya_line[
+        fenncoordinate[x - 1]: fenncoordinate[x]
+    ]
 
 
 def calculate_scores(variables, x, sehvduz, sehvduzsay):
@@ -124,26 +161,39 @@ def calculate_scores(variables, x, sehvduz, sehvduzsay):
     duz_key = f"fenn_{x}_duz"
     sehv_key = f"fenn_{x}_sehv"
     bal_key = f"fenn{x}_bal"
-    sual_say = int(variables['fennsualsaydeyisenler'][f"fennsual{x}"])
+    sual_say = int(variables["fennsualsaydeyisenler"][f"fennsual{x}"])
 
     for y in range(sual_say):
-        student_answer = variables['fenncavabdeyisenler'][fenn_key][y]
-        correct_answer = variables['duzguncavabdeyisenler'][f"dzgn_cvb_f{x}"][y]
+        student_answer = variables["fenncavabdeyisenler"][fenn_key][y]
+        correct_answer = variables["duzguncavabdeyisenler"][f"dzgn_cvb_f{x}"][y]
 
-        if student_answer == correct_answer or correct_answer == '*':
-            variables['fennduzdeyisenler'][duz_key] += 1
-        elif student_answer != ' ':
-            variables['fennsehvdeyisenler'][sehv_key] += 1
+        if student_answer == correct_answer or correct_answer == "*":
+            variables["fennduzdeyisenler"][duz_key] += 1
+        elif student_answer != " ":
+            variables["fennsehvdeyisenler"][sehv_key] += 1
 
-    if sehvduz.lower() == 'var':
-        variables['fenncembaldeyisenler'][bal_key] = round((variables['fennduzdeyisenler'][duz_key] - (variables['fennsehvdeyisenler'][sehv_key] / int(sehvduzsay))) * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
-        variables['fenncembaldeyisenler'][bal_key] = max(0, variables['fenncembaldeyisenler'][bal_key])
+    if sehvduz.lower() == "var":
+        variables["fenncembaldeyisenler"][bal_key] = round(
+            (
+                variables["fennduzdeyisenler"][duz_key]
+                - (variables["fennsehvdeyisenler"][sehv_key] / int(sehvduzsay))
+            )
+            * float(variables["fennbaldeyisenler"][f"fennbal{x}"]),
+            2,
+        )
+        variables["fenncembaldeyisenler"][bal_key] = max(
+            0, variables["fenncembaldeyisenler"][bal_key]
+        )
     else:
-        variables['fenncembaldeyisenler'][bal_key] = round(variables['fennduzdeyisenler'][duz_key] * float(variables['fennbaldeyisenler'][f"fennbal{x}"]), 2)
+        variables["fenncembaldeyisenler"][bal_key] = round(
+            variables["fennduzdeyisenler"][duz_key]
+            * float(variables["fennbaldeyisenler"][f"fennbal{x}"]),
+            2,
+        )
 
 
 def main():
-    dosya_input_path = get_file_path('OMR scan daxil edin: ')
+    dosya_input_path = get_file_path("OMR scan daxil edin: ")
     dosya_read = read_and_replace(dosya_input_path, replaceletter)
     dosya_list = dosya_read.split("\n") if dosya_read else []
 
@@ -156,7 +206,7 @@ def main():
         if sinaqformasec == i["ad"]:
             variables, fenncoordinate = initialize_variables(i)
             sehvduz = i["sehvduz"]
-            sehvduzsay = i["sehvduzsay"] if sehvduz.lower() == 'var' else None
+            sehvduzsay = i["sehvduzsay"] if sehvduz.lower() == "var" else None
             break
 
     if not variables:

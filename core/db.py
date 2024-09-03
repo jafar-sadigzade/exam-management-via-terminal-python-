@@ -4,12 +4,12 @@ import sqlite3
 def db_first():
     try:
         global cursor, conn, tbname
-        dbname = 'exam.sqlite3'  # SQLite database file
-        tbname = input('Cədvəl adını daxil edin: ')
+        dbname = "exam.sqlite3"  # SQLite database file
+        tbname = input("Cədvəl adını daxil edin: ")
         conn = sqlite3.connect(dbname)
         cursor = conn.cursor()
         cursor.execute(f"DROP TABLE IF EXISTS {tbname}")
-        sql = f'''CREATE TABLE {tbname}(
+        sql = f"""CREATE TABLE {tbname}(
             ad TEXT,
             soyad TEXT,
             is_no TEXT,
@@ -18,7 +18,7 @@ def db_first():
             sinif TEXT,
             bolme TEXT,
             cem REAL
-        )'''
+        )"""
         cursor.execute(sql)
         conn.commit()
     except sqlite3.Error as e:
@@ -33,7 +33,7 @@ def db_second(x):
             f"fenn{x}_bal",
             f"fenn{x}",
             f"dzgn_cvb_f{x}",
-            f"fennad{x}"
+            f"fennad{x}",
         ]
 
         cursor.execute(f"PRAGMA table_info({tbname})")
@@ -41,7 +41,7 @@ def db_second(x):
 
         for column in required_columns:
             if column not in existing_columns:
-                if column.endswith('_bal'):
+                if column.endswith("_bal"):
                     cursor.execute(f"ALTER TABLE {tbname} ADD COLUMN {column} REAL")
                 else:
                     cursor.execute(f"ALTER TABLE {tbname} ADD COLUMN {column} TEXT")
@@ -51,21 +51,45 @@ def db_second(x):
         print(f"An error occurred: {e}")
 
 
-def db_third(ad, soyad, is_no, ata_adi, cins, sinif, bolme, cem, fennduzdeyisenler, fennsehvdeyisenler, fenncembaldeyisenler, fenncavabdeyisenler, duzguncavabdeyisenler, fennaddeyisenler):
+def db_third(
+    ad,
+    soyad,
+    is_no,
+    ata_adi,
+    cins,
+    sinif,
+    bolme,
+    cem,
+    fennduzdeyisenler,
+    fennsehvdeyisenler,
+    fenncembaldeyisenler,
+    fenncavabdeyisenler,
+    duzguncavabdeyisenler,
+    fennaddeyisenler,
+):
     try:
-        columns = ['ad', 'soyad', 'is_no', 'ata_adi', 'cins', 'sinif', 'bolme', 'cem']
-        placeholders = ['?', '?', '?', '?', '?', '?', '?', '?']
+        columns = ["ad", "soyad", "is_no", "ata_adi", "cins", "sinif", "bolme", "cem"]
+        placeholders = ["?", "?", "?", "?", "?", "?", "?", "?"]
         values = [ad, soyad, is_no, ata_adi, cins, sinif, bolme, cem]
 
-        for data in [fennduzdeyisenler, fennsehvdeyisenler, fenncembaldeyisenler, fenncavabdeyisenler, duzguncavabdeyisenler, fennaddeyisenler]:
+        for data in [
+            fennduzdeyisenler,
+            fennsehvdeyisenler,
+            fenncembaldeyisenler,
+            fenncavabdeyisenler,
+            duzguncavabdeyisenler,
+            fennaddeyisenler,
+        ]:
             columns.extend(data.keys())
-            placeholders.extend(['?'] * len(data))
+            placeholders.extend(["?"] * len(data))
             values.extend(data.values())
 
-        columns_str = ', '.join(columns)
-        placeholders_str = ', '.join(placeholders)
+        columns_str = ", ".join(columns)
+        placeholders_str = ", ".join(placeholders)
 
-        insert_data = f"INSERT INTO {tbname} ({columns_str}) VALUES ({placeholders_str})"
+        insert_data = (
+            f"INSERT INTO {tbname} ({columns_str}) VALUES ({placeholders_str})"
+        )
         cursor.execute(insert_data, values)
         conn.commit()
     except sqlite3.Error as e:
